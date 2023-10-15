@@ -1,0 +1,41 @@
+.wrapper {
+  display: flex;
+  padding-top: 10px;
+  flex-direction: column;
+  overflow-y: auto;
+  width: 100%;
+
+  .wrap {
+  overflow: hidden;
+}
+
+  .container {
+   padding: 50px 15px 30px 15px;
+   display: flex;
+   justify-content: space-between;
+ 
+   .text {
+     font-size: 18px;
+   }
+ }
+
+  .button {
+    display: flex;
+    justify-content: center;
+  }
+  .content {
+    padding: 20px;
+
+    .p {
+      padding-bottom: 15px;
+      font-size: 22px;
+    }
+
+    .h {
+      padding-bottom: 15px;
+    }
+    .a {
+      font-size: 18px;
+    }
+  }
+}
