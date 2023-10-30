@@ -2,7 +2,7 @@ import * as React from "react";
 import { Stack, CircularProgress } from "@mui/material";
 import styles from "./spinner.module.scss";
 
-export function Spinner() {
+export const Spinner = () => {
   return (
     <Stack
       className={styles.wrap}
@@ -13,4 +13,4 @@ export function Spinner() {
       <CircularProgress size={70} color="inherit" />
     </Stack>
   );
-}
+};

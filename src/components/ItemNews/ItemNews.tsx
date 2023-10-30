@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@mui/material";
 import styles from "./item.module.scss";
-import { TNews } from "../types/news";
-import { getTime } from "../hooks/useTimes";
+import { TNews } from "../../types/news";
+import { getTime } from "../../utils/getTime";
 import { Link } from "react-router-dom";
 
 type TItemNewsProps = {

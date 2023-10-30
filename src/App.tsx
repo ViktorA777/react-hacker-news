@@ -5,9 +5,9 @@ import { Routes, Route } from "react-router-dom";
 
 import { MainPage } from "./pages/MainPage";
 import { NewsPage } from "./pages/NewsPage";
-import Header from "./header";
+import { Header } from "./components/header";
 
-const App = () => {
+export const App = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -27,5 +27,3 @@ const App = () => {
     </div>
   );
 };
-
-export default App;

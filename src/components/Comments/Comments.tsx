@@ -1,13 +1,11 @@
 import { Card, CardContent, Divider } from "@mui/material";
-
 import { useState } from "react";
-
 import styles from "./comments.module.scss";
 import { useQuery } from "@tanstack/react-query";
-import { newsService } from "../api/newsService";
+import { newsService } from "../../api/newsService";
 import { CommentsLoader } from "../CommentsLoader";
-import { getTime } from "../hooks/useTimes";
-import { TComments } from "../types/comments";
+import { getTime } from "../../utils/getTime";
+import { TComments } from "../../types/comments";
 
 type CommentsProps = {
   comments?: TComments[];
@@ -24,13 +22,18 @@ export const Comments = ({
     [`commentsIds`, commentsKids],
     () =>
       commentsKids &&
-      Promise.all(commentsKids?.map(newsService.getCurrentNews<TComments>))
+      Promise.all(commentsKids?.map(newsService.getCurrentItems<TComments>))
   );
 
-  const [showComments, setShowComments] = useState<boolean>(false);
+  const [showComments, setShowComments] = useState<Record<string, boolean>>({});
 
-  console.log("commentsIds", data);
-  console.log("com", comments);
+  const toggleShowComments = (id: number | string) => {
+    setShowComments((state) => {
+      return {
+        [id]: !state[id],
+      };
+    });
+  };
 
   return (
     <>
@@ -43,10 +46,12 @@ export const Comments = ({
 
             const count = item?.kids?.length ? (
               <p
-                onClick={() => setShowComments(!showComments)}
+                onClick={() => toggleShowComments(item?.id)}
                 className={styles.p}
               >
-                ({item?.kids?.length} more)
+                {showComments[item?.id]
+                  ? "(-)"
+                  : `(${item?.kids?.length} more)`}
               </p>
             ) : (
               ""
@@ -63,7 +68,7 @@ export const Comments = ({
                   <div>
                     <div className={styles.content}>
                       <div className={styles.info}>
-                        {timer} ago, by: {item.by} {count}
+                        {timer} ago, by: {item?.by} {count}
                       </div>
                     </div>
                     <div>
@@ -72,7 +77,7 @@ export const Comments = ({
                   </div>
                 </CardContent>
                 <Divider />
-                {item.kids && showComments && (
+                {item.kids && showComments[item?.id] && (
                   <div className={styles.more}>
                     <Comments commentsKids={item.kids} />
                   </div>
