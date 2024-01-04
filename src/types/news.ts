@@ -10,3 +10,5 @@ export type TNews = {
   type: string;
   url: string;
 };
+
+

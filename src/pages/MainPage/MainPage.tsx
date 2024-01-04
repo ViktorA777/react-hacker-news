@@ -1,27 +1,41 @@
 import styles from "./mainPage.module.scss";
 import { ItemNews } from "../../components/ItemNews";
-import { useNews } from "../../hooks/useNews";
 import { Spinner } from "../../components/Spinner";
-import { ErrorPage } from "../Error";
+
+import { useQuery } from "@tanstack/react-query";
+import { getNews } from "../../api/newsService";
+import { Header } from "../../components/header";
+import { Navigate } from "react-router-dom";
 
 export const MainPage = () => {
-  const { data, isLoading, isError } = useNews();
-
-  console.log("data", data);
+  const { data, isLoading, isError, isRefetching, refetch } = useQuery(
+    ["newsData"],
+    getNews,
+    {
+      refetchInterval: 60 * 1000,
+    }
+  );
 
   if (isError) {
-    return <ErrorPage />;
-  }
-
-  if (isLoading) {
-    return <Spinner />;
+    return <Navigate to="/error" />;
   }
 
   return (
-    <div className={styles.container}>
-      {data?.map((item) => {
-        return <ItemNews key={item?.id} item={item} />;
-      })}
-    </div>
+    <>
+      <Header
+        isLoading={isLoading}
+        isRefetching={isRefetching}
+        refetch={refetch}
+      />
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <div className={styles.container}>
+          {data?.map((item) => {
+            return <ItemNews key={item?.id} item={item} />;
+          })}
+        </div>
+      )}
+    </>
   );
 };

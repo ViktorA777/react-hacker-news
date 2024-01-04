@@ -2,13 +2,15 @@ import { Card, CardContent, Divider } from "@mui/material";
 import { useState } from "react";
 import styles from "./comments.module.scss";
 import { useQuery } from "@tanstack/react-query";
-import { newsService } from "../../api/newsService";
+import { getCurrentItems } from "../../api/newsService";
 import { CommentsLoader } from "../CommentsLoader";
 import { getTime } from "../../utils/getTime";
 import { TComments } from "../../types/comments";
 
+
+
 type CommentsProps = {
-  comments?: TComments[];
+  comments?: TComments[]
   isFetchingComments?: boolean;
   commentsKids?: number[];
 };
@@ -22,7 +24,10 @@ export const Comments = ({
     [`commentsIds`, commentsKids],
     () =>
       commentsKids &&
-      Promise.all(commentsKids?.map(newsService.getCurrentItems<TComments>))
+      Promise.all(commentsKids?.map(getCurrentItems<TComments>)),
+    {
+      keepPreviousData: true,
+    }
   );
 
   const [showComments, setShowComments] = useState<Record<string, boolean>>({});
@@ -30,6 +35,7 @@ export const Comments = ({
   const toggleShowComments = (id: number | string) => {
     setShowComments((state) => {
       return {
+        ...state,
         [id]: !state[id],
       };
     });

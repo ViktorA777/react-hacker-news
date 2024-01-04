@@ -1,15 +1,15 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { ButtonComponent } from "../../components/Buttons";
 import { Comments } from "../../components/Comments";
 
 import styles from "./newspage.module.scss";
 import { useQuery } from "@tanstack/react-query";
-import { newsService } from "../../api/newsService";
-import { getTime } from "../../utils/getTime";
+import { getCurrentItems } from "../../api/newsService";
 import { Spinner } from "../../components/Spinner";
 import { ErrorPage } from "../Error";
 import { TComments } from "../../types/comments";
 import { TNews } from "../../types/news";
+import { ItemInfo } from "../../components/ItemInfo";
 
 export const NewsPage = () => {
   const { id } = useParams();
@@ -19,7 +19,8 @@ export const NewsPage = () => {
     data: news,
     isError,
     isFetching,
-  } = useQuery(["newsIds"], () => newsService.getCurrentItems<TNews>(id));
+    isLoading,
+  } = useQuery(["newsIds"], () => getCurrentItems<TNews>(id));
 
   const {
     data: comments,
@@ -28,32 +29,31 @@ export const NewsPage = () => {
     refetch: refetchComments,
   } = useQuery(
     ["comments", news?.kids],
-    () =>
-      news?.kids &&
-      Promise.all(news.kids.map(newsService.getCurrentItems<TComments>))
+    () => news?.kids && Promise.all(news.kids.map(getCurrentItems<TComments>))
   );
 
-  if (isFetching) {
+  const handleBack = () => navigate(-1);
+
+  if (isFetching || isLoading) {
     return <Spinner />;
   }
 
   if (isError) {
-    return <ErrorPage />;
+    return <Navigate to="/error" />;
   }
-
-  const time = news !== undefined ? news.time : 0;
-
-  const timer = getTime(time);
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.button}>
-        <ButtonComponent onClick={() => navigate("/")} title={"Back to News"} />
+        <ButtonComponent onClick={handleBack} title={"Back to News"} />
       </div>
       <div className={styles.content}>
-        <p className={styles.p}>
-          {timer} ago, by: {news?.by}, point: {news?.score}
-        </p>
+        <ItemInfo
+          by={news.by}
+          score={news.score}
+          kids={news.kids}
+          time={news.time}
+        />
         <h2 className={styles.h}>{news?.title}</h2>
         <a className={styles.a} href={news?.url}>
           link to news

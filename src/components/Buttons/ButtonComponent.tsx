@@ -6,11 +6,12 @@ type ButtonComponentProps = ButtonProps & {
 
 export const ButtonComponent: React.FC<ButtonComponentProps> = ({
   isLoading,
+  title,
   ...props
 }) => {
   return (
     <Button sx={{ fontFamily: "Raleway" }} variant="outlined" {...props}>
-      {props.title}{" "}
+      {title}{" "}
       {isLoading && (
         <CircularProgress
           sx={{ marginLeft: "10px" }}
